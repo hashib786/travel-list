@@ -27,8 +27,12 @@ function Logo() {
 }
 
 function Form() {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+  };
+
   return (
-    <div className="add-form">
+    <form className="add-form" onSubmit={handleSubmit}>
       <h3>What do you need for your trip?</h3>
       <select>
         {Array.from({ length: 20 }, (_, i) => i + 1).map((ele) => (
@@ -39,7 +43,7 @@ function Form() {
       </select>
       <input type="text" placeholder="text..." />
       <button>Add</button>
-    </div>
+    </form>
   );
 }
 

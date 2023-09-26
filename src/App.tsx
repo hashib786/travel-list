@@ -26,11 +26,16 @@ function App() {
     );
   };
 
+  const handleClear = (): void => {
+    setItem([]);
+  };
+
   return (
     <div className="app">
       <Logo />
       <Form onAddItems={handleAdd} />
       <PackagingList
+        onReset={handleClear}
         item={item}
         onDelete={handleDelete}
         onToggle={handleToggleItem}
@@ -93,8 +98,14 @@ interface PackingInterface {
   item: ListI[];
   onDelete: (id: number) => void;
   onToggle: (id: number) => void;
+  onReset: () => void;
 }
-function PackagingList({ item, onDelete, onToggle }: PackingInterface) {
+function PackagingList({
+  item,
+  onDelete,
+  onToggle,
+  onReset,
+}: PackingInterface) {
   const [sortBy, setSortBy] = useState("input");
 
   let sortedItem: ListI[] = [];
@@ -121,6 +132,7 @@ function PackagingList({ item, onDelete, onToggle }: PackingInterface) {
           <option value="description">Sort By Description</option>
           <option value="packing">Sort By Packing</option>
         </select>
+        <button onClick={onReset}>Reset</button>
       </div>
     </div>
   );

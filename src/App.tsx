@@ -14,11 +14,15 @@ function App() {
     setItem((prev) => [...prev, item]);
   };
 
+  const handleDelete = (id: number): void => {
+    setItem((prev) => prev.filter((item) => item.id !== id));
+  };
+
   return (
     <div className="app">
       <Logo />
       <Form onAddItems={handleAdd} />
-      <PackagingList item={item} />
+      <PackagingList item={item} onDelete={handleDelete} />
       <Stats />
     </div>
   );
@@ -34,7 +38,7 @@ interface FormProps {
 
 function Form({ onAddItems }: FormProps): JSX.Element {
   const [description, setDescription] = useState("");
-  const [quantity, setQuantity] = useState(0);
+  const [quantity, setQuantity] = useState(1);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -73,26 +77,37 @@ function Form({ onAddItems }: FormProps): JSX.Element {
   );
 }
 
-function PackagingList({ item }: { item: ListI[] }) {
+interface PackingInterface {
+  item: ListI[];
+  onDelete: (id: number) => void;
+}
+function PackagingList({ item, onDelete }: PackingInterface) {
   return (
     <div className="list">
       <ul>
         {item.map((ele) => (
-          <Item {...ele} key={ele.id} />
+          <Item {...ele} key={ele.id} onDelete={onDelete} />
         ))}
       </ul>
     </div>
   );
 }
 
-function Item({ description, quantity, packed, id }: ListI) {
+interface itemInterface {
+  description: string;
+  quantity: number;
+  packed: boolean;
+  id: number;
+  onDelete: (id: number) => void;
+}
+function Item({ description, quantity, packed, id, onDelete }: itemInterface) {
   console.log(description, quantity, packed, id);
   return (
     <li>
       <span style={packed ? { textDecoration: "line-through" } : {}}>
         {quantity} {description}
       </span>
-      <span>❌</span>
+      <button onClick={() => onDelete(id)}>❌</button>
     </li>
   );
 }

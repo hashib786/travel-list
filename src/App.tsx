@@ -18,11 +18,23 @@ function App() {
     setItem((prev) => prev.filter((item) => item.id !== id));
   };
 
+  const handleToggleItem = (id: number): void => {
+    setItem((prev) =>
+      prev.map((item) =>
+        item.id === id ? { ...item, packed: !item.packed } : item
+      )
+    );
+  };
+
   return (
     <div className="app">
       <Logo />
       <Form onAddItems={handleAdd} />
-      <PackagingList item={item} onDelete={handleDelete} />
+      <PackagingList
+        item={item}
+        onDelete={handleDelete}
+        onToggle={handleToggleItem}
+      />
       <Stats />
     </div>
   );
@@ -80,13 +92,14 @@ function Form({ onAddItems }: FormProps): JSX.Element {
 interface PackingInterface {
   item: ListI[];
   onDelete: (id: number) => void;
+  onToggle: (id: number) => void;
 }
-function PackagingList({ item, onDelete }: PackingInterface) {
+function PackagingList({ item, onDelete, onToggle }: PackingInterface) {
   return (
     <div className="list">
       <ul>
         {item.map((ele) => (
-          <Item {...ele} key={ele.id} onDelete={onDelete} />
+          <Item {...ele} key={ele.id} onDelete={onDelete} onToggle={onToggle} />
         ))}
       </ul>
     </div>
@@ -99,11 +112,24 @@ interface itemInterface {
   packed: boolean;
   id: number;
   onDelete: (id: number) => void;
+  onToggle: (id: number) => void;
 }
-function Item({ description, quantity, packed, id, onDelete }: itemInterface) {
-  console.log(description, quantity, packed, id);
+function Item({
+  description,
+  quantity,
+  packed,
+  id,
+  onDelete,
+  onToggle,
+}: itemInterface) {
   return (
     <li>
+      <input
+        type="checkbox"
+        checked={packed}
+        value={packed ? "Yes" : "No"}
+        onChange={() => onToggle(id)}
+      />
       <span style={packed ? { textDecoration: "line-through" } : {}}>
         {quantity} {description}
       </span>

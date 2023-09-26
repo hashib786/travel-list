@@ -7,18 +7,18 @@ type ListI = {
   id: number;
 };
 
-const intialData: ListI[] = [
-  { description: "hello hashib", quantity: 10, packed: true, id: 1 },
-  { description: "hello hashib", quantity: 10, packed: false, id: 2 },
-  { description: "hello hashib", quantity: 10, packed: false, id: 3 },
-];
-
 function App() {
+  const [item, setItem] = useState<ListI[]>([]);
+
+  const handleAdd = (item: ListI) => {
+    setItem((prev) => [...prev, item]);
+  };
+
   return (
     <div className="app">
       <Logo />
-      <Form />
-      <PackagingList />
+      <Form onAddItems={handleAdd} />
+      <PackagingList item={item} />
       <Stats />
     </div>
   );
@@ -28,7 +28,11 @@ function Logo() {
   return <h1>Travel List</h1>;
 }
 
-function Form() {
+interface FormProps {
+  onAddItems: (item: ListI) => void;
+}
+
+function Form({ onAddItems }: FormProps): JSX.Element {
   const [description, setDescription] = useState("");
   const [quantity, setQuantity] = useState(0);
 
@@ -42,7 +46,7 @@ function Form() {
       packed: false,
       id: Date.now(),
     };
-    console.log(newItem);
+    onAddItems(newItem);
 
     setDescription("");
     setQuantity(0);
@@ -69,11 +73,11 @@ function Form() {
   );
 }
 
-function PackagingList() {
+function PackagingList({ item }: { item: ListI[] }) {
   return (
     <div className="list">
       <ul>
-        {intialData.map((ele) => (
+        {item.map((ele) => (
           <Item {...ele} key={ele.id} />
         ))}
       </ul>
